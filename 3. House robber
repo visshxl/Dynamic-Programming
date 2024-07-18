@@ -1,0 +1,34 @@
+https://leetcode.com/problems/house-robber/
+class Solution {
+public:
+// tabulation
+    int rob(vector<int>& nums) {
+        vector<int> dp(nums.size(), -1);
+        // phle me to first element jitna he hoga max profit after chori
+        dp[0]=nums[0];
+        for(int i=1; i<nums.size(); i++){
+            int take=nums[i];
+            if(i>1) take+=dp[i-2]; // int bound condition
+            int notTake=dp[i-1];
+            dp[i]=max(take, notTake);
+        }
+        return dp[nums.size()-1];
+    }
+};
+// striver dp series
+// // memoization
+//     int recursiveSol(vector<int>& nums, int index, vector<int>& dp){
+//         if(index>=nums.size()) return 0;
+
+//         if(dp[index]!=-1) return dp[index];
+//         int take =nums[index] + recursiveSol(nums, index+2, dp);
+//         int notTake=0 + recursiveSol(nums, index+1, dp);
+
+//         return dp[index] = max(take, notTake);
+//     }
+
+//     int rob(vector<int>& nums) {
+//         vector<int> dp(nums.size(), -1);
+//         int ans = recursiveSol(nums, 0, dp);
+//         return ans;
+//     }
