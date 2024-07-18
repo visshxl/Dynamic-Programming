@@ -1,0 +1,40 @@
+https://www.geeksforgeeks.org/problems/minimal-cost/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=minimal-cost
+class Solution {
+  public:
+//   tabulation
+  int minimizeCost(vector<int>& height, int n, int k) {
+        vector<int> dp(n, 0);
+        dp[0]=0;
+        for(int i=1; i<height.size(); i++){
+            int mini=INT_MAX;
+            for(int j=1; j<=k; j++){
+                if(i-j>=0){
+                    int sol=dp[i-j]+abs(height[i]-height[i-j]);
+                    mini=min(mini, sol);
+                }
+            }
+            dp[i]=mini;
+        }
+        return dp[n-1];
+  }
+};
+
+//   memoization
+  int dfs(vector<int>& height, vector<int>& dp, int k, int n){
+      if(n==0) return 0;
+      if(dp[n]!=-1) return dp[n];
+      int minimum=INT_MAX;
+    //   calculating for every possible sol till k
+      for(int j=k; j>=1; j--){
+          if(n-j>=0){ // checking in bounds
+              int sol=dfs(height, dp, k, n-j)+abs(height[n]-height[n-j]);
+              minimum=min(sol, minimum);
+          }
+      }
+      return dp[n]=minimum;
+  }
+  
+    int minimizeCost(vector<int>& height, int n, int k) {
+        vector<int> dp(n+1, -1);
+        return dfs(height, dp, k, n-1);
+    }
