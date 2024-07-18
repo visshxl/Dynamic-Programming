@@ -1,0 +1,61 @@
+https://www.geeksforgeeks.org/problems/geek-jump/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=geek-jump
+
+class Solution {
+  public:
+    // tabulation with space optimization o(n) to o(1);
+    int minimumEnergy(vector<int>& height, int n) {
+        int prev=0;
+        int prev2=0;
+        int curr;
+        for(int i=1; i<height.size(); i++){
+            int fs=prev+abs(height[i]-height[i-1]);
+            int ss=INT_MAX;
+            if(i>1) ss=prev2+abs(height[i]-height[i-2]);
+            curr=min(ss, fs);
+            prev2=prev;
+            prev=curr;
+        }
+        return prev;
+    }
+};
+//  // tabulation
+//     int minimumEnergy(vector<int>& height, int n) {
+//         vector<int> dp(n);
+//         dp[0]=0;
+//         for(int i=1; i<height.size(); i++){
+//             int fs=dp[i-1]+abs(height[i]-height[i-1]);
+//             int ss=INT_MAX;
+//             if(i>1) ss=dp[i-2]+abs(height[i]-height[i-2]);
+//             dp[i]=min(ss, fs);
+//         }
+//         return dp[n-1];
+//     }
+// };
+
+// dp- memoization:-
+// class Solution {
+//   public:
+//     int recursiveCall(vector<int>& height, int n, vector<int>& dp){
+//         if(n==0) return 0;
+//         // memoization
+//         if(dp[n]!=-1) return dp[n];
+//         // moving from back to front 
+//         // skipping 1 rock
+//         int next=abs(height[n]-height[n-1])+recursiveCall(height, n-1, dp);
+//         // declaring the variable
+//         int next2=INT_MAX;
+//         // skipping 2 rock if possible
+//         if(n>1){
+//             next2=abs(height[n]-height[n-2])+recursiveCall(height, n-2, dp);
+//         }
+//         // returning the minimum possible value
+//         return dp[n]=min(next, next2);
+//     }
+    
+//     int minimumEnergy(vector<int>& height, int n) {
+//         vector<int> dp(n+1, -1);
+//         int ans=recursiveCall(height, n-1, dp);
+//         return ans;
+//     }
+// };
+// striver dp series
