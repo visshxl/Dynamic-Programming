@@ -1,6 +1,25 @@
 https://leetcode.com/problems/house-robber/
 class Solution {
 public:
+// tabulation with space optimization
+    int rob(vector<int>& nums) {
+        int prev2=0;
+        int curr;
+        int prev=nums[0];
+        for(int i=1; i<nums.size(); i++){
+            int take=nums[i];
+            if(i>1) take+=prev2; // in bound condition
+            int notTake=prev;
+            curr=max(take, notTake);
+            prev2=prev;
+            prev=curr;
+        }
+        return prev;
+    }
+};
+
+class Solution {
+public:
 // tabulation
     int rob(vector<int>& nums) {
         vector<int> dp(nums.size(), -1);
