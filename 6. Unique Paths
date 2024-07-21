@@ -1,0 +1,62 @@
+https://leetcode.com/problems/unique-paths/
+class Solution {
+public:
+// tabulation with space optimisation
+    int uniquePaths(int m, int n) {
+        vector<int> prev(n, 0);
+        for(int i=0; i<m; i++){
+            vector<int> temp(n, 0);
+            for(int j=0; j<n; j++){
+                if(i==0 && j==0){
+                    temp[0]=1; // base condtion
+                }else{
+                    int up=0, left=0;
+                    // converted the recurrence realtion to this
+                    if(i>0) up=prev[j];
+                    if(j>0) left=temp[j-1];
+                    temp[j]=left+up; // from recursion approach
+                }
+            }
+            prev=temp;
+        }
+        return prev[n-1]; // started from m-1 and n-1 in recursion so thats why
+    }
+};
+
+// // tabulation
+//     int uniquePaths(int m, int n) {
+//         vector<vector<int>> dp(m, vector<int>(n, -1));
+//         for(int i=0; i<m; i++){
+//             for(int j=0; j<n; j++){
+//                 if(i==0 && j==0){
+//                     dp[0][0]=1; // base condtion
+//                 }else{
+//                     int up=0, left=0;
+//                     // converted the recurrence realtion to this
+//                     if(i>0) up=dp[i-1][j];
+//                     if(j>0) left=dp[i][j-1];
+//                     dp[i][j]=left+up; // from recursion approach
+//                 }
+//             }
+//         }
+//         return dp[m-1][n-1]; // started from m-1 and n-1 in recursion so thats why
+//     }
+// };
+// // memoization
+//     int findPaths(int i, int j, vector<vector<int>>& dp){
+//         if(i<0 || j<0) return 0; // return 0 hm out of bound chle gye hai
+//         if(i==0 && j==0) return 1; // hmne end se shru kiya aur start dhundh liya h to return 1
+//         // check krre h kya uska path hmey phle se pata h, agar hn to whi return krdia
+//         if(dp[i][j]!=-1) return dp[i][j]; 
+//         int left=findPaths(i, j-1, dp); // right call (going left cuz bottom up)
+//         int up=findPaths(i-1, j, dp);// down call (going up cuz bottom up)
+//         // jo naya path pata lagra hai usey store kra diya for further use in dp
+//         return dp[i][j]=left+up; // return possible ways from from up and left 
+//     }
+
+//     int uniquePaths(int m, int n) {
+//         vector<vector<int>> dp(m, vector<int>(n, -1));
+//         return findPaths(m-1, n-1, dp);
+//     }
+// };
+// dp bottom up approach (madhur)
