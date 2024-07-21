@@ -1,0 +1,120 @@
+https://www.geeksforgeeks.org/problems/geeks-training/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=geeks-training
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution {
+  public:
+  
+  //   tabulation with space optimsation from O(n*4) to O(4)
+  int maximumPoints(vector<vector<int>>& points, int n) {
+    vector<int> prev(4, 0);
+    prev[0]=max(points[0][1], points[0][2]);
+    prev[1]=max(points[0][0], points[0][2]);
+    prev[2]=max(points[0][1], points[0][0]);
+    prev[3]=max(points[0][1], max(points[0][0], points[0][2]));
+    
+    for(int day=1; day<n; day++){
+        // iterating for every task assuming that it is performed on the last day
+        vector<int> temp(4,0); // temp for pushing present day value to the prev
+        for(int last=0; last<4; last++){
+            temp[last]=0;
+            // iterating fot every task that we can perform on the present day
+            // and is not performed on yesterday
+            for(int task=0; task<3; task++){
+                if(task!=last){
+                    // adding today task and prev task points that provide max points
+                    // if we do this task today
+                    temp[last]=max(temp[last], points[day][task]+prev[task]);
+                    // storing the ans in the dp of day and the task that is performed last day
+                }
+            }
+        }
+        prev=temp;
+    }
+    return prev[3];
+  }
+};
+// //   tabulation
+//       int maximumPoints(vector<vector<int>>& points, int n) {
+//         vector<vector<int>> dp(points.size(), vector<int>(4, 0));
+//         dp[0][0]=max(points[0][1], points[0][2]);
+//         dp[0][1]=max(points[0][0], points[0][2]);
+//         dp[0][2]=max(points[0][1], points[0][0]);
+//         dp[0][3]=max(points[0][1], max(points[0][0], points[0][2]));
+        
+//         for(int day=1; day<n; day++){
+//             // iterating for every task assuming that it is performed on the last day
+//             for(int last=0; last<4; last++){
+//                 // iterating fot every task that we can perform on the present day
+//                 // and is not performed on yesterday
+//                 for(int task=0; task<3; task++){
+//                     if(task!=last){
+//                         // adding today task and prev task points that provide max points
+//                         // if we do this task today
+//                         int point=points[day][task]+dp[day-1][task];
+//                         dp[day][last]=max(dp[day][last], point);
+//                         // storing the ans in the dp of day and the task that is performed last day
+//                     }
+//                 }
+//             }
+//         }
+//         return dp[n-1][3];
+//       }
+// };
+// //   memoization
+//     int recursiveCall(vector<vector<int>>& points, int day, int task, vector<vector<int>>& dp){
+//         int maxi=INT_MIN;
+//         // base condtion for the first day(bottom up approach)
+//         if(day==0){
+//             for(int i=0; i<3; i++){
+//                 // last day me jo bhi max le skte honge wo lenge
+//                 if(i!=task) maxi=max(maxi, points[0][i]);
+//             }
+//             // max ans return kara dega ye 
+//             return dp[day][task]=maxi;
+//         }
+//         // dp check
+//         if(dp[day][task]!=-1) return dp[day][task];
+//         for(int i=0; i<3; i++){
+//             if(i!=task){ // kya wo task hmne pichle wale day me to nhi kiya
+//                 // isse phle k jo max points bney they plus aaj k day points
+//                 int point=points[day][i]+recursiveCall(points, day-1, i, dp);
+//                 // max of total both task
+//                 maxi=max(maxi, point);
+//             }
+//         }
+//         // pushing the max for that particular day and task in dp
+//         return dp[day][task]=maxi;
+//     }
+  
+//     int maximumPoints(vector<vector<int>>& points, int n) {
+//         vector<vector<int>> dp(points.size(), vector<int>(4, -1));
+//         return recursiveCall(points, n-1, 3, dp);
+//     }
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<vector<int>> points;
+        for (int i = 0; i < n; ++i) {
+            vector<int> temp;
+            for (int j = 0; j < 3; ++j) {
+                int x;
+                cin >> x;
+                temp.push_back(x);
+            }
+            points.push_back(temp);
+        }
+
+        Solution obj;
+        cout << obj.maximumPoints(points, n) << endl;
+    }
+    return 0;
+}
+// } Driver Code Ends
