@@ -1,0 +1,48 @@
+https://leetcode.com/problems/triangle/
+class Solution {
+public:
+// memoization
+// isme recursion me bottom up nahi top down lenge kyuki end point nahi pata hai
+    int minPathSum(int row, int col, vector<vector<int>>& triangle, vector<vector<int>>& dp){
+        // last row me aagye to return krdenge
+        if(row==triangle.size()-1) return triangle[row][col]; 
+
+        if(dp[row][col]!=-1) return dp[row][col];
+        int straightDown=triangle[row][col]+minPathSum(row+1, col, triangle, dp);
+        int diagonalDown=triangle[row][col]+minPathSum(row+1, col+1, triangle, dp);
+        return dp[row][col]=min(straightDown, diagonalDown);
+    }
+    // tabulation with space optimisation 
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int m=triangle.size(), n=triangle[m-1].size();
+        vector<int> prev(n, -1);
+        vector<int> curr(n, -1);
+        // creating the last row for future dp calls
+        for(int k=0; k<n; k++) prev[k]=triangle[m-1][k]; 
+
+        for(int i=m-2; i>=0; i--){
+            for(int j=i; j>=0; j--){
+                int down=triangle[i][j]+prev[j];
+                int downRight=triangle[i][j]+prev[j+1];
+                curr[j]=min(down, downRight);
+            }
+            prev=curr;
+        }
+        return prev[0];
+    }
+};
+// striver dp series
+// tabulation
+// int minimumTotal(vector<vector<int>>& triangle) {
+//     int m=triangle.size(), n=triangle[m-1].size();
+//     vector<vector<int>> dp(m, vector<int>(n, -1));
+//     for(int k=0; k<n; k++) dp[m-1][k]=triangle[m-1][k];   
+//     for(int i=m-2; i>=0; i--){
+//         for(int j=i; j>=0; j--){
+//             int down=triangle[i][j]+dp[i+1][j];
+//             int downRight=triangle[i][j]+dp[i+1][j+1];
+//             dp[i][j]=min(down, downRight);
+//         }
+//     } 
+//     return dp[0][0];
+// }
