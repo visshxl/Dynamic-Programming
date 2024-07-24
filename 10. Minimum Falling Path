@@ -1,0 +1,54 @@
+https://leetcode.com/problems/minimum-falling-path-sum/
+class Solution {
+public:
+// tabulation with space optimisation
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int m=matrix.size(), n=matrix[0].size(), result=INT_MAX;
+        vector<int> prev(n);
+        vector<int> curr(n);
+        for(int row1=0; row1<n; row1++) prev[row1]=matrix[0][row1];
+        
+        for(int row=1; row<m; row++){
+            for(int col=0; col<n; col++){
+                int leftUp=INT_MAX, rightUp=INT_MAX;
+                int Up=matrix[row][col]+prev[col];
+                if(col>0) leftUp=matrix[row][col]+prev[col-1];
+                if(col<n-1) rightUp=matrix[row][col]+prev[col+1];
+                curr[col]=min(leftUp, min(Up, rightUp));
+            }
+            prev=curr;
+        }
+        for(auto it:prev) result=min(result, it);
+        return result;
+    }
+};
+
+// // memoization bottom up
+//     int minVal(int row, int col, vector<vector<int>>& matrix, int n, vector<vector<int>>& dp){
+//         // base condition
+//         if(col<0 || col>=n)
+//             return 1e9;;
+//         if(row==0)
+//             return matrix[row][col];
+//         // condition where the column index gets out of the bound
+
+//         // putting -1 to the dp doesnt works as -1 is in the input range
+//         if(dp[row][col]!=-111) return dp[row][col]; 
+//         // calls for taking all the three moves in the matrix;
+//         int leftUp=matrix[row][col]+minVal(row-1, col-1, matrix, n, dp);
+//         int Up=matrix[row][col]+minVal(row-1, col, matrix, n, dp);
+//         int rightUp=matrix[row][col]+minVal(row-1, col+1, matrix, n, dp);
+//         return dp[row][col]=min(leftUp, min(Up, rightUp));
+//     }
+
+//     int minFallingPathSum(vector<vector<int>>& matrix) {
+//         int m=matrix.size(), n=matrix[0].size();
+//         vector<vector<int>> dp(m, vector<int> (n, -111));
+//         int result=INT_MAX;
+//         for(int i=0; i<n; i++){
+//             // passing and storing the min value returned by each index of the last row;
+//             result=min(result, minVal(m-1, i, matrix, n, dp)); 
+//         }
+//         return result;
+//     }
+// };
