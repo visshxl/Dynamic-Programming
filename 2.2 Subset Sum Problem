@@ -1,0 +1,70 @@
+https://www.geeksforgeeks.org/problems/subset-sum-problem-1611555638/1
+class Solution{   
+public:
+// memoization bottom up
+    bool isSumPossible(int ind, vector<int>& arr, int sum, vector<vector<int>>& dp){
+        if(sum==0) return true; // taget found
+        if(ind==0) return (arr[0]==sum); // base condition
+        
+        
+        if(dp[ind][sum]!=-1) return dp[ind][sum];
+        // take
+        bool take=false;
+        if(arr[ind]<=sum){ // avoiding unneccessary calls 
+            take=isSumPossible(ind-1, arr, sum-arr[ind], dp);
+        }
+        
+        // not take
+        bool notTake=isSumPossible(ind-1, arr, sum, dp);
+        
+        return dp[ind][sum]=take|notTake;
+    }
+    // return isSumPossible(arr.size()-1, arr, sum, dp); // main recursion call
+    
+// tabulation with space optimization
+    bool isSubsetSum(vector<int>arr, int sum){
+        vector<bool> prev(sum+1, 0);
+        vector<bool> curr(sum+1, 0);
+        // har ek index se tu sum 0 to bna he sakta hai :(dp[index][sum])
+        prev[0]=1;
+        // aur first element se wo element bhi ban sakta hai
+        prev[arr[0]]=1;
+        for(int ind=1; ind<arr.size(); ind++){
+            for(int target=0; target<=sum; target++){
+                bool notTake=prev[target];
+                
+                bool take=false;
+                if(arr[ind]<=target){ // avoiding unneccessary calls 
+                    take=prev[target-arr[ind]];
+                }
+                
+                curr[target]=take|notTake;
+            }
+            prev=curr;
+        }
+        return prev[sum];
+    }
+};
+
+// tabulation
+//     bool isSubsetSum(vector<int>arr, int sum){
+//         vector<vector<bool>> dp(arr.size(), vector<bool>(sum+1, 0));
+//         // har ek index se tu sum 0 to bna he sakta hai :(dp[index][sum])
+//         for(int i=0; i<arr.size(); i++) dp[i][0]=1;
+//         // aur first element se wo element bhi ban sakta hai
+//         dp[0][arr[0]]=1;
+//         for(int ind=1; ind<arr.size(); ind++){
+//             for(int target=1; target<=sum; target++){
+//                 bool notTake=dp[ind-1][target];
+                
+//                 bool take=false;
+//                 if(arr[ind]<=target){ // avoiding unneccessary calls 
+//                     take=dp[ind-1][target-arr[ind]];
+//                 }
+                
+//                 dp[ind][target]=take|notTake;
+//             }
+//         }
+//         return dp[arr.size()-1][sum];
+//     }
+// };
