@@ -1,0 +1,65 @@
+https://leetcode.com/problems/cherry-pickup-ii/ 
+class Solution {
+public:
+// memoization top down cuz starting point is fixed
+    int maxCherries(int row, int col1, int col2, vector<vector<int>>& grid, vector<vector<vector<int>>>& dp){
+        // bounds check for both robots cols
+        if(col1<0 || col2<0 || col1>=grid[0].size() || col2>=grid[0].size()) return -1e5;
+
+        if(row==grid.size()-1){ // base condition
+            if(col1==col2)
+                return grid[row][col1]; // both on the same index
+            else
+                return grid[row][col1]+grid[row][col2]; // both on the different index
+        }
+
+        if(dp[row][col1][col2]!=-1) return dp[row][col1][col2]; // 3D dp
+        int maxi=INT_MIN, result;
+        for(int i=-1; i<2; i++){ // -1, 0, +1 are the index deltas that first robot will have
+            // and same deltas second robot will also have, having total of 9 calls for each index
+            for(int j=-1; j<2; j++){ 
+                result= maxCherries(row+1, col1+i, col2+j, grid, dp);
+                if(col1==col2){ // both on the same cell
+                    result+=grid[row][col1];
+                }else{// both on the different cell
+                    result+=grid[row][col1]+grid[row][col2]; 
+                }
+                maxi=max(maxi, result); // storing the maximum from all of the 9 calls for each cell
+            }
+        }
+        return dp[row][col1][col2]=maxi;
+    }
+
+    int cherryPickup(vector<vector<int>>& grid) {
+        int m=grid.size(), n=grid[0].size();
+        vector<vector<vector<int>>> dp(m, vector<vector<int>>(n, vector<int>(n, -1)));
+        return maxCherries(0, 0, n-1, grid, dp);
+    }
+};
+// // tabulation (nhi ki)
+//     int cherryPickup(vector<vector<int>>& grid) {
+//         int m=grid.size(), n=grid[0].size();
+//         vector<vector<vector<int>>> dp(m, vector<vector<int>>(n, vector<int>(n, -1)));
+//         dp[0][0][n-1]=grid[0][0]+grid[0][n-1];
+//         int maxi=INT_MIN;
+//         for(int row=1; row<m; row++){
+//             for(int )
+//             for(int col=0; col<n; col++){
+//                 for(int del1=-1, del1<2; del1++){
+//                     for(int del2=-1, del2<2; del2++){
+//                         result= dp[row-1][col+del1][col+del2];
+//                         if(col+del1==col+del2){ // both on the same cell
+//                             result+=grid[row][col+del1];
+//                         }else{// both on the different cell
+//                             result+=grid[row][col+del1]+grid[row][col+del2]; 
+//                         }
+//                         maxi=max(maxi, result);
+//                         dp[row][col+del1][col+del2]=maxi;
+//                     }
+//                 }
+//             }
+//         }
+//         int ans=-1;
+//         for(auto it:dp[])
+//     }
+// };
