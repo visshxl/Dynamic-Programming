@@ -1,0 +1,45 @@
+https://leetcode.com/problems/partition-equal-subset-sum/
+class Solution {
+public:
+// same as the subset sum with target value problem on the gfg
+
+// memoization 
+    bool isSubset(int ind, int target, vector<vector<int>>& dp, vector<int>& nums){
+        if(target==0) return true;
+        if(ind==0) return (nums[0]==target);
+
+        if(dp[ind][target]!=-1) return dp[ind][target];
+
+        bool take=false;
+        if(nums[ind]<=target) take=isSubset(ind-1, target-nums[ind], dp, nums);
+
+        int notTake=isSubset(ind-1, target, dp, nums);
+        return dp[ind][target]=take|notTake;
+    }
+// tabulation with space optimisation
+    bool canPartition(vector<int>& nums) {
+        int totalSum=accumulate(nums.begin(), nums.end(), 0);
+        if(totalSum&1) return false; // sum is odd
+        // agar total_sum/2 ka koi subset exist krta hai arr me then remaining subset ka 
+        // sum bhi equall he hoga
+        int sum=totalSum/2;
+        vector<bool> prev(sum+1, 0);
+        vector<bool> curr(sum+1, 0);
+        prev[0]=1;
+        if(nums[0]<=sum) prev[nums[0]]=1;
+        
+        for(int ind=1; ind<nums.size(); ind++){
+            for(int target=1; target<=sum; target++){
+                prev[0]=1;
+                bool take=false;
+                if(nums[ind]<=target) take=prev[target-nums[ind]];
+
+                int notTake=prev[target];
+                curr[target]=take|notTake; 
+            }
+            prev=curr;
+        }
+        return prev[sum];
+    }
+};
+// striver dp series
