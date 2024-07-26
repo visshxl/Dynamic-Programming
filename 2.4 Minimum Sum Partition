@@ -1,0 +1,39 @@
+https://www.geeksforgeeks.org/problems/minimum-sum-partition3317/1?itm_source=geeksforgeeks&itm_medium=article&itm_campaign=practice_card
+class Solution{
+
+  public:
+// tabulation same from the subset sum problem
+
+// intuition ye hai ki subset sum problem me dp k end wali row batati hai ki konse konse sum we 
+// 1: can produce with the all possible subsets of the array
+// 2: same here we obtain that last row and check the diffrences of all the possible sums
+// 3: agar total sum arr ka h 10 and we can generate 4 so s1=4 and s2=total_sum-s1;
+// 4: and we will store the min abs difference of the s1 and s2
+	int minDifference(int nums[], int n){ 
+	    int totalSum=accumulate(nums, nums+n, 0);
+        vector<vector<bool>> dp(n, vector<bool>(totalSum+1, 0));
+        int m=dp[0].size();
+        for(int i=0; i<n; i++) dp[0][i]=0;
+        dp[0][nums[0]]=1;
+        dp[0][totalSum]=1;
+
+        for(int ind=1; ind<n; ind++){
+            for(int target=1; target<=totalSum; target++){
+                bool take=false;
+                if(target>=nums[ind]) take=dp[ind-1][target-nums[ind]];
+                bool notTake=dp[ind-1][target];
+                dp[ind][target]=take|notTake;
+            }
+        }
+        int mini=INT_MAX;
+        for(int i=0; i<m; i++){
+            if(dp[n-1][i]){
+                int s1=i;
+                int s2=totalSum-i;
+                mini=min(mini, abs(s1-s2));
+            }
+        }
+        return mini;
+	} 
+}; 
+// striver dp16
