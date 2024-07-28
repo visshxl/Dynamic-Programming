@@ -1,0 +1,66 @@
+https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1
+class Solution
+{
+    public:
+    
+    int findMaxVal(int ind, int W, int wt[], int val[], vector<vector<int>>& dp){
+        if(ind==0){
+            // available weight zyada ya barabar hai 0th index k wight k to lelenge elemnt ko
+            if(W>=wt[0]) return val[0];
+            else return 0;
+        }
+        // sirf index pe maximum nhi har index pe har possible weight ka max dekhenge
+        if(dp[ind][W]!=-1) return dp[ind][W];
+        
+        int not_take=findMaxVal(ind-1, W, wt, val, dp);
+        int take=INT_MIN;
+        if(W>=wt[ind]){
+            take=val[ind]+findMaxVal(ind-1, W-wt[ind], wt, val, dp);
+        }
+        return dp[ind][W]=max(take, not_take);
+    }
+    // return findMaxVal(n-1, W, wt, val, dp); // recursion call
+    
+    // tabulation with space optimisation
+    int knapSack(int W, int wt[], int val[], int n) 
+    { 
+        vector<int>prev(W+1, 0);
+        // base case
+        // 0th index k weight aur weight se jyada until given W pe val[0] dal denge
+        for(int i=wt[0]; i<=W; i++) prev[i]=val[0];
+        
+        for(int i=1; i<n; i++){
+            for(int w=W; w>=0; w--){ // moving from right to left for sigle arr space opti...
+                int not_take=prev[w];
+                int take=INT_MIN;
+                if(w>=wt[i]){
+                    take=val[i]+prev[w-wt[i]];
+                }
+                // ans ko usi arr me update kr dere hai kyuki for further use we require only
+                // left side of arr
+                prev[w]=max(take, not_take);
+            }
+        }
+        return prev[W];
+    }
+};
+    // tabulation
+    // int knapSack(int W, int wt[], int val[], int n) 
+    // { 
+    //     vector<vector<int>> dp(n, vector<int>(W+1, 0));
+    //     // base case
+    //     // 0th index k weight aur weight se jyada until given W pe val[0] dal denge
+    //     for(int i=wt[0]; i<=W; i++) dp[0][i]=val[0];
+        
+    //     for(int i=1; i<n; i++){
+    //         for(int w=0; w<=W; w++){
+    //             int not_take=dp[i-1][w];
+    //             int take=INT_MIN;
+    //             if(w>=wt[i]){
+    //                 take=val[i]+dp[i-1][w-wt[i]];
+    //             }
+    //             dp[i][w]=max(take, not_take);
+    //         }
+    //     }
+    //     return dp[n-1][W];
+    // }
