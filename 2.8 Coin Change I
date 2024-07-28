@@ -1,0 +1,52 @@
+https://leetcode.com/problems/coin-change/
+class Solution {
+public:
+// jha bhi unlimited supply ho ya multiple pickups kar skte ho to wha take wale ka index same rhega
+// memoization
+    int findMinCoins(int ind, vector<int>& coins, int target, vector<vector<int>>& dp){
+        if(ind==0){
+            // end me jo coin bacha hai kya us se target ban skta hai?
+            if(target%coins[0]==0) return target/coins[0];
+            // nhi ban skta to return max value
+            return 1e9;
+        }
+
+        if(dp[ind][target]!=-1) return dp[ind][target];
+
+        int not_take=0+findMinCoins(ind-1, coins, target, dp);
+        int take=INT_MAX;
+        // if take then will stand on the same index
+        if(coins[ind]<=target) take=1+findMinCoins(ind, coins, target-coins[ind], dp);
+        return dp[ind][target]=min(take, not_take);
+    }
+    // int ans = findMinCoins(coins.size()-1, coins, amount, dp);
+
+// tabulation with space optimisation
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> prev(amount+1, 0);
+        vector<int> curr(amount+1, 0);
+        for(int tar=0; tar<=amount; tar++){ // base condition
+        // jha jha hum target ko bna skte hai with the help of coin[0] we will mark 
+        // it with the number of coins req to make the target
+            if(tar%coins[0]==0)
+                prev[tar]=tar/coins[0];
+            else 
+                prev[tar]=1e9;
+        }
+
+        for(int ind=1; ind<coins.size(); ind++){
+            for(int target=0; target<=amount; target++){
+                int not_take=0+prev[target];
+                int take=INT_MAX;
+                // if take then will stand on the same index
+                if(coins[ind]<=target) take=1+curr[target-coins[ind]];
+                curr[target]=min(take, not_take);
+            }
+            prev=curr;
+        }
+        int ans=prev[amount];
+        if(ans>=1e9) return -1;
+        return ans;
+    }
+};
+// striver dp20
