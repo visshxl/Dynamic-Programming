@@ -1,0 +1,43 @@
+https://www.geeksforgeeks.org/problems/knapsack-with-duplicate-items4201/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=knapsack-with-duplicate-items
+class Solution{
+public:
+// memoization
+    int maxProfit(int ind, int W, int val[], int wt[], vector<vector<int>>& dp){
+        if(ind==0){
+            // only this thing is new and different from the 01 knapsack
+            if(W>=wt[0]) return val[0]*(W/wt[0]); 
+            return 0;
+        }
+        
+        if(dp[ind][W]!=-1) return dp[ind][W];
+        
+        int not_take=0+maxProfit(ind-1, W, val, wt, dp);
+        int take=INT_MIN;
+        // as we know we dont move index in take case while we have unlimited supply
+        if(W>=wt[ind]) take=val[ind]+maxProfit(ind, W-wt[ind], val, wt, dp);
+        return dp[ind][W]=max(take, not_take);
+    }
+    // return maxProfit(N-1, W, val, wt, dp); //recursive call
+
+    // tabulation with space optimisation
+    int knapSack(int N, int W, int val[], int wt[])
+    {
+        vector<int> prev(W+1, 0);
+        vector<int> curr(W+1, 0);
+        for(int i=wt[0]; i<=W; i++){
+            prev[i]=val[0]*(i/wt[0]);
+        }
+        
+        for(int ind=1; ind<N; ind++){
+            for(int w=0; w<=W; w++){
+                int not_take=prev[w];
+                int take=INT_MIN;
+                if(w>=wt[ind]) take=val[ind]+curr[w-wt[ind]];
+                curr[w]=max(take, not_take);
+            }
+            prev=curr;
+        }
+        return prev[W];
+    }
+};
+// dp 23
