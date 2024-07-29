@@ -1,0 +1,44 @@
+https://leetcode.com/problems/coin-change-ii/
+class Solution {
+public:
+// same as coin change I here we just have to add the number of ways instead of coins used
+// bas yaha dp me hum no of coins req ki jagah number of ways store karayenge
+
+// memoization:-
+    int AllWays(int ind, int target, vector<int>& coins, vector<vector<int>>& dp){  
+        if(ind==0){
+            if(target==0) return 1;
+            if(target%coins[0]==0) return 1;
+            return 0;
+        }
+
+        if(dp[ind][target]!=-1) return dp[ind][target];
+
+        int not_take=AllWays(ind-1, target, coins, dp);
+        int take=0;
+        if(coins[ind]<=target) take=AllWays(ind, target-coins[ind], coins, dp);
+        return dp[ind][target]=take+not_take;
+    }
+    // return AllWays(coins.size()-1, amount, coins, dp); // recursive call
+
+// tabulation and space optimized
+    int change(int amount, vector<int>& coins) {
+        vector<int> prev(amount+1, 0);
+        vector<int> curr(amount+1, 0);
+        for(int target=0; target<=amount; target++){
+            //jo jo target hm bna skte h phle coin se usey 1 mark kr denge
+            if(target%coins[0]==0) prev[target]=1;
+        }
+        for(int ind=1; ind<coins.size(); ind++){
+            for(int target=0; target<=amount; target++){
+                int not_take=prev[target];
+                int take=0;
+                if(coins[ind]<=target) take=curr[target-coins[ind]];
+                curr[target]=take+not_take;
+            }
+            prev=curr;
+        }
+        return prev[amount];
+    }
+};
+// dp 22
