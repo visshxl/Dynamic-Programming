@@ -19,25 +19,23 @@ public:
     }
     // return maxProfit(N-1, W, val, wt, dp); //recursive call
 
-    // tabulation with space optimisation
+    // tabulation with space optimisation with single array
     int knapSack(int N, int W, int val[], int wt[])
     {
-        vector<int> prev(W+1, 0);
         vector<int> curr(W+1, 0);
         for(int i=wt[0]; i<=W; i++){
-            prev[i]=val[0]*(i/wt[0]);
+            curr[i]=val[0]*(i/wt[0]);
         }
         
         for(int ind=1; ind<N; ind++){
             for(int w=0; w<=W; w++){
-                int not_take=prev[w];
+                int not_take=curr[w];
                 int take=INT_MIN;
                 if(w>=wt[ind]) take=val[ind]+curr[w-wt[ind]];
                 curr[w]=max(take, not_take);
-            }
-            prev=curr;
+            }            
         }
-        return prev[W];
+        return curr[W];
     }
 };
 // dp 23
