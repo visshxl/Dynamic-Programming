@@ -1,0 +1,44 @@
+https://www.geeksforgeeks.org/problems/rod-cutting0840/1
+class Solution{
+  public:
+//   unbounded knapsack problem
+    // memoization
+    int MaxScore(int ind, int rodLeft, int price[], vector<vector<int>>& dp){
+        if(rodLeft==0) return 0;
+        // jitni rod bachegi wo sari he le skta h use mai
+        if(ind==0) return rodLeft*price[0];
+        
+        if(dp[ind][rodLeft]!=-1) return dp[ind][rodLeft];
+        
+        int not_take=MaxScore(ind-1, rodLeft, price, dp);
+        int take=INT_MIN;
+        int peiceLen=ind+1;
+        // just like unbounded knapsack isme bhi hum ek element ko bar bar lenge
+        if(rodLeft>=peiceLen){
+            take=price[ind]+MaxScore(ind, rodLeft-peiceLen, price, dp);
+        }
+        return dp[ind][rodLeft]=max(take, not_take);
+    }
+    // return MaxScore(n-1, n, price, dp);
+    
+    // tabulation with space optimized
+    int cutRod(int price[], int n) {
+        vector<int>prev(n+1, 0);
+        vector<int>curr(n+1, 0);
+        for(int i=0; i<=n; i++) prev[i]=price[0]*i;
+        
+        for(int ind=1; ind<n; ind++){
+            for(int rodLeft=0; rodLeft<=n; rodLeft++){
+                int not_take=prev[rodLeft];
+                int take=INT_MIN;
+                int peiceLen=ind+1;
+                if(rodLeft>=peiceLen){
+                    take=price[ind]+curr[rodLeft-peiceLen];
+                }
+                curr[rodLeft]=max(take, not_take);
+            }
+            prev=curr;
+        }
+        return prev[n];
+    }
+};
