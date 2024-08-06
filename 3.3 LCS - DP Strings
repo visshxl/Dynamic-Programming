@@ -1,0 +1,58 @@
+class Solution {
+public:
+// tabulation with space otimisation
+    int longestCommonSubsequence(string text1, string text2) {
+        vector<int> prev(text2.size()+1, 0);
+        vector<int> curr(text2.size()+1, 0);
+        for(int i=0; i<=text2.size(); i++) prev[i]=0;
+
+        for(int ind1=1; ind1<=text1.size(); ind1++){
+            for(int ind2=1; ind2<=text2.size(); ind2++){
+                if(text1[ind1-1]==text2[ind2-1]) 
+                    curr[ind2]=1+prev[ind2-1];
+                else 
+                    curr[ind2]=max(prev[ind2], curr[ind2-1]);
+            }
+            prev=curr;
+        }
+        return prev[text2.size()];
+    }
+};
+
+// tabulation
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        vector<vector<int>> dp(text1.size()+1, vector<int>(text2.size()+1, -1));
+        for(int i=0; i<text1.size(); i++) dp[i][0]=0;
+        for(int i=0; i<text2.size(); i++) dp[0][i]=0;
+
+        for(int ind1=1; ind1<=text1.size(); ind1++){
+            for(int ind2=1; ind2<=text2.size(); ind2++){
+                if(text1[ind1-1]==text2[ind2-1]) dp[ind1][ind2]=1+dp[ind1-1][ind2-1];
+                else
+                    dp[ind1][ind2]=max(dp[ind1-1][ind2], dp[ind1][ind2-1]);
+            }
+        }
+        return dp[text1.size()][text2.size()];
+    }
+};
+
+// class Solution {
+// public:
+//     int recursiveSol(int ind1, int ind2, string& s, string& t, vector<vector<int>>& dp){
+//         if(ind1 == 0 || ind2 == 0) return 0;
+
+//         if(dp[ind1-1][ind2-1]!=-1) return dp[ind1][ind2];
+//         if(s[ind1-1]==t[ind2-1]) return dp[ind1][ind2]=1+recursiveSol(ind1-1, ind2-1, s, t, dp);
+        
+//         return dp[ind1][ind2]=max(recursiveSol(ind1-1, ind2, s, t, dp), recursiveSol(ind1, ind2-1, s, t, dp));
+//     }
+
+//     int longestCommonSubsequence(string text1, string text2) {
+//         // shifting the indexes 1 right so that 0 will be our -1 and 1=0 and so on;
+//         // so that we can do the tabulation easily   
+//         vector<vector<int>> dp(text1.size()+1, vector<int>(text2.size()+1, -1));
+//         return recursiveSol(text1.size(), text2.size(), text1, text2, dp);
+//     }
+// };
