@@ -1,0 +1,36 @@
+https://www.geeksforgeeks.org/problems/print-all-lcs-sequences3413/1
+class Solution {
+  public:
+    vector<string> all_longest_common_subsequences(string s, string t) {
+        vector<string> ans;
+        // tabulation code of the longest common subsequence on leetcode
+        vector<vector<int>> dp(s.size()+1, vector<int>(t.size()+1, 0));
+        for(int i=0; i<=t.size(); i++) dp[0][i]=0;
+        
+        for(int i=1; i<=s.size(); i++){
+            for(int j=1; j<=t.size(); j++){
+                if(s[i-1]==t[j-1]) dp[i][j]=1+dp[i-1][j-1];
+                else dp[i][j]=max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+        
+        // intuition will be develop after seeing the dp table  
+        string str = "";
+        int i = s.size(), j = t.size();
+        while (i > 0 && j > 0) {
+            if (s[i - 1] == t[j - 1]) {
+                str += s[i - 1];
+                i--;
+                j--;
+            } else if (dp[i - 1][j] > dp[i][j - 1]) {
+                i--;
+            } else {
+                j--;
+            }
+        }
+        reverse(str.begin(), str.end());
+        ans.push_back(str);
+        return ans;
+    }
+};
+// dp26
