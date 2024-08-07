@@ -1,0 +1,36 @@
+https://leetcode.com/problems/longest-palindromic-subsequence/
+class Solution {
+public:
+// bhoot he simple approach hai just shru me halka sa change hai baki ques same lcs hai
+// assume s=aRacAfCECvARb is the given string so we will reverse the string to 
+// t=bRAvCECfAcaRa, since we have the find the longest palindromic, now the longest common 
+// substring among the given and its reverse is automatically our answer
+
+// memoization (longest common substring)
+    int LCS(int ind1, int ind2, string& s, string& t, vector<vector<int>>& dp){
+        if(ind1==0 || ind2==0) return 0;
+
+        if(dp[ind1][ind2]!=-1) return dp[ind1][ind2];
+
+        if(s[ind1-1]==t[ind2-1]) return dp[ind1][ind2]=1+LCS(ind1-1, ind2-1, s, t, dp);
+
+        return dp[ind1][ind2]=max(LCS(ind1-1, ind2, s, t, dp), LCS(ind1, ind2-1, s, t, dp));
+    }
+
+// tabulation with space optimisation
+    int longestPalindromeSubseq(string s) {
+        string t=s;
+        reverse(t.begin(), t.end());
+        vector<int> prev(s.size()+1, 0);
+        vector<int> curr(s.size()+1, 0);
+        for(int i=1; i<=s.size(); i++){
+            for(int j=1; j<=s.size(); j++){
+                if(s[i-1]==t[j-1]) curr[j]=1+prev[j-1];
+                else curr[j]=max(prev[j], curr[j-1]);
+            }
+            prev=curr;
+        }
+        return prev[s.size()];
+    }
+};
+// dp 28
