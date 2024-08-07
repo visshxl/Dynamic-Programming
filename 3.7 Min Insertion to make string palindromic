@@ -1,0 +1,39 @@
+https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
+class Solution {
+public:
+// bhoot he simple approach hai just shru me halka sa change hai baki ques same longest palindromic
+// subsequence hai, assume s=mbadm is the given string so we will reverse the string to 
+// t=mdabm, since we have the find the longest palindromic, now the longest common 
+// substring among the given and its reverse is our our longest palindrome in the given string
+// by these we can conclude that the we have to push the rest of the elements to the string and that
+// will be our answer
+    int LCS(int i, int j, string& s, string& t, vector<vector<int>>& dp){
+        if(i==0 || j==0) return 0;
+
+        if(dp[i][j]!=-1) return dp[i][j];
+
+        // match
+        if(s[i-1]==t[j-1]) return dp[i][j]=1+LCS(i-1, j-1, s, t, dp);
+
+        return dp[i][j]=max(LCS(i-1, j, s, t, dp), LCS(i, j-1, s, t, dp));
+        // not match
+    }
+
+// tabulation with space optimisation
+    int minInsertions(string s) {
+        string t=s;
+        reverse(t.begin(), t.end());
+        vector<int> prev(s.size()+1, 0);
+        vector<int> curr(s.size()+1, 0);
+
+        for(int i=1; i<=s.size(); i++){
+            for(int j=1; j<=s.size(); j++){
+                if(s[i-1]==t[j-1]) curr[j]=1+prev[j-1];
+                else curr[j]=max(curr[j-1], prev[j]);
+            }
+            prev=curr;
+        }
+        return s.size() - prev[s.size()];
+    }
+};
+// dp 31
